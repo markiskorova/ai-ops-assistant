@@ -1,0 +1,37 @@
+# Go build artifacts
+/bin/
+/pkg/
+*.exe
+*.test
+*.out
+
+# Editor settings
+.vscode/
+.idea/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Docker
+*.local
+docker-compose.override.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+
+# Node (if frontend is added later)
+node_modules/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db

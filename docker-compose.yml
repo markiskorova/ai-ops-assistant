@@ -1,0 +1,28 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.db
+    restart: always
+    environment:
+      POSTGRES_USER: aiops
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: aiops_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
