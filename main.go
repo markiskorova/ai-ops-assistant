@@ -10,7 +10,13 @@ import (
 )
 
 func main() {
-	db.Init()
+	// Initialize database and schema
+	database := db.InitDB()
+
+	err := schema.Init(database)
+	if err != nil {
+		log.Fatalf("❌ Failed to initialize GraphQL schema: %v", err)
+	}
 
 	h := handler.New(&handler.Config{
 		Schema:   &schema.Schema,

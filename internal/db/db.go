@@ -14,7 +14,7 @@ import (
 
 var DB *gorm.DB
 
-func Init() {
+func InitDB() *gorm.DB {
 	_ = godotenv.Load() // Load .env silently
 
 	host := os.Getenv("DB_HOST")
@@ -39,4 +39,5 @@ func Init() {
 	}
 
 	log.Println("✅ Database initialized and models migrated")
+	return DB
 }

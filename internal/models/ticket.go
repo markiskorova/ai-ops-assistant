@@ -1,7 +1,17 @@
 package models
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type Ticket struct {
-	ID      string `gorm:"primaryKey" json:"id"`
-	Status  string `json:"status"`
-	Message string `json:"message"`
+	ID          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	Title       string
+	Description string
+	Category    string
+	Priority    string
+	Status      string
+	CreatedAt   time.Time
 }

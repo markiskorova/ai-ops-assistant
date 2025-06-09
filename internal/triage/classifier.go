@@ -1,20 +1,10 @@
 package triage
 
-import "strings"
+import "ai-ops-assistant/internal/models"
 
-func containsCriticalKeywords(text string) bool {
-	return containsAny(text, []string{"panic", "outage", "down", "failure"})
-}
-
-func containsDatabaseKeywords(text string) bool {
-	return containsAny(text, []string{"db", "database", "query", "sql"})
-}
-
-func containsAny(text string, keywords []string) bool {
-	for _, word := range keywords {
-		if strings.Contains(strings.ToLower(text), strings.ToLower(word)) {
-			return true
-		}
-	}
-	return false
+// Classify simulates categorizing a ticket with mock logic
+func Classify(t *models.Ticket) {
+    t.Status = "triaged"
+    t.Priority = "medium"
+    t.Category = "bug"
 }
