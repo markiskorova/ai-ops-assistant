@@ -20,37 +20,39 @@ The MVP focuses on 4 core functionalities:
 
 ---
 
-## 🚀 Phase 2 – MVP Backend Implementation
+## ✅ Phase 2 – MVP Backend Implementation
 
-### ✅ Step 5: Log Summarization (Complete)
+### ✅ Step 5: Log Summarization
 - [x] Create `LogEntry` PostgreSQL model
 - [x] Add `summarizeLog` mutation to GraphQL schema
 - [x] Store logs and mock summaries in DB
-- [x] Add `logEntry(id)` query to GraphQL
-- [x] Add `logEntries(limit)` query
+- [x] Add `logEntry(id)` and `logEntries(limit)` queries
 - [x] Add `created_at` timestamp to model
 - [x] Create standalone summarization worker
 - [x] Run worker in Docker using shared .env
 - [x] Confirm background summarization loop works
 
-### 🟡 Step 6: Ticket Triage (Next)
+### ✅ Step 6: Ticket Triage
 - [x] Add `TriageTicket` mutation in graphql-go
 - [x] Connect mutation to PostgreSQL via GORM
-- [ ] Add `ticket` query to retrieve by ID
-- [ ] Implement async worker-based triage
-- [ ] Add ticket listing or filtered query
+- [x] Add `ticket` query to retrieve by ID
+- [x] Implement async worker-based triage
+- [x] Add ticket listing or filtered query
 
-### 🟡 Step 7: Changelog Generation
-- [ ] Add `GenerateChangelog` mutation to GraphQL schema
-- [ ] Define input format and structure (e.g., commit messages or structured entries)
-- [ ] Process commit-like messages into structured changelogs
-- [ ] Add database model for changelogs
-- [ ] Add query for retrieving changelogs
+### ✅ Step 7: Changelog Generation
+- [x] Add `GenerateChangelog` mutation to GraphQL schema
+- [x] Define input format and structure (e.g., commit messages or structured entries)
+- [x] Process commit-like messages into structured changelogs
+- [x] Add database model for changelogs
+- [x] Add query for retrieving changelogs
 
-### 🟡 Step 8: Secure Admin API & Auth
-- [ ] Add JWT middleware for GraphQL endpoint
-- [ ] Create user table and login mutation
-- [ ] Restrict mutations/queries to authorized users
+### ✅ Step 8: Secure Admin API & Auth
+- [x] Add JWT middleware for GraphQL endpoint
+- [x] Create user table and login mutation
+- [x] Restrict mutations/queries to authorized users
+- [x] Add password hashing with bcrypt
+- [x] Add `signup` mutation
+- [x] Add `me` query
 
 ---
 

@@ -9,8 +9,8 @@ AI Ops Assistant is a backend system designed to simulate intelligent operations
 - **Language:** Go (1.21)
 - **API Layer:** [graphql-go](https://github.com/graphql-go/graphql)
 - **Database:** PostgreSQL (via GORM)
-- **Auth:** JWT (planned)
-- **Async Processing:** Background worker service (Go)
+- **Auth:** JWT (login, signup, me)
+- **Async Processing:** Background worker services (Go)
 - **Containerization:** Docker + Docker Compose
 - **Infrastructure:** Terraform (planned)
 - **Frontend (planned):** React
@@ -23,22 +23,27 @@ The MVP includes four core features:
 
 1. **Log Summarization**
    - Accept raw log data
-   - Generate a summary (currently mocked)
+   - Generate a summary (mocked NLP)
    - Store and retrieve via GraphQL
+   - Async summarizer worker included
 
 2. **Ticket Triage**
-   - Accept tickets with status and message
-   - Classify/store in DB
-   - Triage logic (worker-based) is planned
+   - Accept and classify tickets
+   - Store in DB
+   - Async triage worker included
+   - Filter by status
 
 3. **Changelog Generation**
    - Accept commit-like entries
-   - Generate release changelogs
-   - Placeholder for future implementation
+   - Generate structured changelogs
+   - Store grouped output as JSON
+   - Query by ID or list
 
 4. **Secure Admin API**
-   - JWT-protected access (planned)
-   - User login and role-based access control
+   - JWT login and signup
+   - Passwords hashed with bcrypt
+   - Protected queries and mutations
+   - `me` query returns user info
 
 ---
 
@@ -46,17 +51,21 @@ The MVP includes four core features:
 
 ```
 cmd/
-  api/       # GraphQL server
-  worker/    # Background summarization worker
+  api/         # GraphQL server
+  worker/
+    summarizer/
+    triage/
 
 internal/
-  db/        # DB connection + init
-  models/    # GORM models
-  schema/    # GraphQL types & resolvers
-  summarizer/# Summarization logic (mocked)
+  auth/        # JWT helpers
+  db/          # DB connection + init
+  models/      # GORM models
+  schema/      # GraphQL types & resolvers
+  summarizer/  # Summarization logic
+  triage/      # Ticket classification logic
 
-.env         # Environment variables
-Dockerfile   # Shared Docker build
+.env
+Dockerfile
 docker-compose.yml
 ```
 
@@ -65,21 +74,17 @@ docker-compose.yml
 ## 🚀 Current Progress
 
 ### ✅ Completed
-- GraphQL API with graphql-go
-- LogEntry model + `summarizeLog` mutation
-- `logEntry(id)` and `logEntries(limit)` queries
-- Dockerized PostgreSQL
-- Background summarization worker (Docker)
-- Modular schema structure
+- Full GraphQL API (modular schema)
+- Log summarization and ticket triage (API + background workers)
+- Changelog generation logic + query support
+- JWT login/signup + bcrypt + `me` query
+- All MVP features complete
 
-### 🔜 In Progress
-- Ticket triage query + async worker
-- Changelog schema and resolver
-
-### 🛠 Planned
-- JWT middleware + secure user auth
+### 🛠 Planned Next
 - CI/CD via GitHub Actions
-- Dashboard with React
+- Terraform-based AWS deployment
+- React dashboard
+- Metrics/observability layer
 
 ---
 
@@ -90,16 +95,6 @@ mutation {
   summarizeLog(raw: "Server crashed at 2am with out-of-memory error.") {
     id
     summary
-  }
-}
-```
-
-```graphql
-query {
-  logEntries(limit: 5) {
-    id
-    summary
-    created_at
   }
 }
 ```

@@ -4,6 +4,7 @@ import (
     "ai-ops-assistant/internal/db"
     "ai-ops-assistant/internal/models"
     "ai-ops-assistant/internal/summarizer"
+    "errors"
     "github.com/google/uuid"
     "github.com/graphql-go/graphql"
 )
@@ -25,6 +26,11 @@ var LogEntryQueryFields = graphql.Fields{
             "id": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
         },
         Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+            _, ok := p.Context.Value("userID").(string)
+            if !ok {
+                return nil, errors.New("unauthorized")
+            }
+
             id := p.Args["id"].(string)
             var entry models.LogEntry
             if err := db.DB.First(&entry, "id = ?", id).Error; err != nil {
@@ -39,6 +45,11 @@ var LogEntryQueryFields = graphql.Fields{
             "limit": &graphql.ArgumentConfig{Type: graphql.Int},
         },
         Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+            _, ok := p.Context.Value("userID").(string)
+            if !ok {
+                return nil, errors.New("unauthorized")
+            }
+
             limit, ok := p.Args["limit"].(int)
             if !ok || limit <= 0 {
                 limit = 10
@@ -59,6 +70,11 @@ var LogEntryMutationFields = graphql.Fields{
             "raw": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
         },
         Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+            _, ok := p.Context.Value("userID").(string)
+            if !ok {
+                return nil, errors.New("unauthorized")
+            }
+
             raw := p.Args["raw"].(string)
             summary, err := summarizer.Summarize(raw)
             if err != nil {
