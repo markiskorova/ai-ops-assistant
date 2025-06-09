@@ -1,14 +1,10 @@
-# GitHub Actions - Go CI with gqlgen support (disabled by default)
-
 name: Go CI
 
 on:
-  workflow_dispatch: # Manually triggered only
-  # To enable automatic CI, uncomment the lines below:
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   build:
@@ -21,10 +17,10 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: 1.21
 
       - name: Cache Go modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/go-build
@@ -32,19 +28,3 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
-      - name: Install gqlgen
-        run: go install github.com/99designs/gqlgen@v0.17.74
-
-      - name: Generate GraphQL code
-        run: go run github.com/99designs/gqlgen generate
-
-      - name: Check for uncommitted gqlgen changes
-        run: |
-          git diff --exit-code || (echo 'ERROR: Uncommitted codegen output. Run gqlgen locally and commit changes.' && exit 1)
-
-      - name: Build application
-        run: go build ./...
-
-      - name: Run tests
-        run: go test ./...

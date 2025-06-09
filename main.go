@@ -1,30 +1,24 @@
 package main
 
 import (
-    "log"
-    "net/http"
-    "os"
+	"ai-ops-assistant/internal/db"
+	"ai-ops-assistant/internal/schema"
+	"log"
+	"net/http"
 
-    "ai-ops-assistant/graph"
-    "ai-ops-assistant/graph/generated"
-
-    "github.com/99designs/gqlgen/graphql/handler"
-    "github.com/99designs/gqlgen/graphql/playground"
+	"github.com/graphql-go/handler"
 )
 
-const defaultPort = "8080"
-
 func main() {
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = defaultPort
-    }
+	db.Init()
 
-    srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	h := handler.New(&handler.Config{
+		Schema:   &schema.Schema,
+		Pretty:   true,
+		GraphiQL: true, // Enables browser UI at /query
+	})
 
-    http.Handle("/", playground.Handler("GraphQL Playground", "/query"))
-    http.Handle("/query", srv)
-
-    log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-    log.Fatal(http.ListenAndServe(":"+port, nil))
+	http.Handle("/query", h)
+	log.Println("🚀 GraphQL server running at http://localhost:8080/query")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
