@@ -1,8 +1,8 @@
 # AI Ops Assistant
 
-AI Ops Assistant is a backend platform inspired by the need for scalable, intelligent internal operations platforms in modern engineering organizations. It simulates the kinds of productivity systems that support cross-functional teams like Engineering, People, and Finance — helping organizations operate at 10x efficiency through automation and AI.
+AI Ops Assistant is a backend platform inspired by Roblox’s mission to scale internal operations with intelligent, efficient tooling. It simulates the kinds of productivity systems that support cross-functional teams like Engineering, People, and Finance — helping organizations operate at 10x efficiency through automation and AI.
 
-Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket triage, and changelog generation using a secure API and background workers. It mirrors real-world use cases in platform engineering, developer enablement, and internal tooling — key concerns of internal productivity and enablement teams at scale.
+Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket triage, and changelog generation using a secure API and background workers. It mirrors real-world use cases in platform engineering, developer enablement, and internal tooling — key focuses of Roblox's Productivity Platforms and Ecosystems team.
 
 ---
 
@@ -19,7 +19,7 @@ Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket
 
 ---
 
-## 🔍 Use Case Highlights
+## 🔍 Roblox-Relevant Features
 
 - **🧠 Intelligent Automation:** Uses AI (OpenAI) to summarize logs and triage support tickets — simulating internal operational workflows  
 - **🔒 Secure Internal APIs:** JWT authentication and admin-protected routes suitable for HR, Finance, and Engineering dashboards  
