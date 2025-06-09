@@ -138,3 +138,7 @@ mutation {
 ## 📄 License
 
 MIT (c) 2025
+---
+
+## 📄 Additional Documentation
+- [System Design One-Pager](./AI_Ops_Assistant_System_Design.md)
