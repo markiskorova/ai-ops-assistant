@@ -1,12 +1,20 @@
-FROM golang:1.23
+# Dockerfile
+FROM golang:1.22-alpine
 
 WORKDIR /app
 
-# Copy the entire project
+# Install Git (needed for Go modules)
+RUN apk add --no-cache git
+
+# Copy code and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
 
-# Download dependencies
-RUN go mod tidy
+# Build binaries
+RUN go build -o /bin/api ./cmd/api
+RUN go build -o /bin/worker ./cmd/worker
 
-# Default command is API; overridden in docker-compose for worker
-CMD ["go", "run", "cmd/api/main.go"]
+# Default to api binary (can be overridden by docker-compose)
+ENTRYPOINT ["/bin/api"]

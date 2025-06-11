@@ -1,10 +1,17 @@
+
 variable "aws_region" {
-  description = "AWS region to deploy resources in"
-  type        = string
-  default     = "us-west-2"
+  default = "us-west-1"
 }
 
-variable "artifact_bucket_name" {
-  description = "Name of the S3 bucket for storing build artifacts"
-  type        = string
+variable "ec2_ami" {
+  description = "Ubuntu 22.04 AMI for us-west-1"
+  default     = "ami-0b2c2a754d5b1d202"
+}
+
+variable "instance_type" {
+  default = "t3.micro"
+}
+
+variable "key_pair_name" {
+  default = "aiops-key"
 }

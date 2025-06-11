@@ -1,4 +1,8 @@
-output "artifact_bucket_arn" {
-  description = "ARN of the created S3 bucket"
-  value       = aws_s3_bucket.artifact_bucket.arn
+
+output "ec2_public_ip" {
+  value = aws_instance.aiops_ec2.public_ip
+}
+
+output "private_key_pem_path" {
+  value = local_file.private_key_pem.filename
 }
