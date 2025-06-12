@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"ai-ops-assistant/internal/models"
 
@@ -29,7 +30,14 @@ func InitDB() *gorm.DB {
 	)
 
 	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	for attempts := 1; attempts <= 5; attempts++ {
+		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+		log.Printf("DB not ready, retrying in %d seconds...", attempts*2)
+		time.Sleep(time.Duration(attempts*2) * time.Second)
+	}
 	if err != nil {
 		log.Fatal("❌ Failed to connect to database:", err)
 	}
@@ -40,4 +48,18 @@ func InitDB() *gorm.DB {
 
 	log.Println("✅ Database initialized and models migrated")
 	return DB
+}
+
+func Connect() (*gorm.DB, error) {
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASS")
+	name := os.Getenv("DB_NAME")
+
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		host, user, pass, name, port,
+	)
+	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
 }

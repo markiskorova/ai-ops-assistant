@@ -1,38 +1,11 @@
-# AI Ops Assistant
+# AI Ops Assistant---
 
-AI Ops Assistant is a backend platform inspired by the need for scalable, intelligent internal operations platforms in modern engineering organizations. It simulates the kinds of productivity systems that support cross-functional teams like Engineering, People, and Finance — helping organizations operate at 10x efficiency through automation and AI.
+## 🚧 Project Status
 
-Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket triage, and changelog generation using a secure API and background workers. It mirrors real-world use cases in platform engineering, developer enablement, and internal tooling — key concerns of internal productivity and enablement teams at scale.
-
----
-
-## 🧰 Tech Stack
-
-- **Language:** Go (1.21)
-- **API Layer:** [graphql-go](https://github.com/graphql-go/graphql)
-- **Database:** PostgreSQL (via GORM)
-- **Auth:** JWT (login, signup, me)
-- **Async Processing:** Background worker services (Go)
-- **Containerization:** Docker + Docker Compose
-- **Infrastructure:** Terraform (planned)
-- **Frontend (planned):** React
+MVP complete — infrastructure and CI/CD in progress (Phase 2)
 
 ---
 
-## 🔍 Use Case Highlights
-
-- **🧠 Intelligent Automation:** Uses AI (OpenAI) to summarize logs and triage support tickets — simulating internal operational workflows  
-- **🔒 Secure Internal APIs:** JWT authentication and admin-protected routes suitable for HR, Finance, and Engineering dashboards  
-- **🔁 Asynchronous Processing:** Background workers handle summarization and classification tasks to simulate scalable productivity tooling  
-- **📈 Designed for Scale:** Ready for CI/CD, cloud deployment, and extensibility for observability and metrics — reflecting real platform engineering concerns
-
----
-
-## 🗺️ Architecture Diagram
-
-![AI Ops Assistant Architecture](architecture_diagram.png)
-
-# AI Ops Assistant
 
 AI Ops Assistant is a backend system designed to simulate intelligent operations (ITOps) workflows like log summarization, ticket triage, and changelog generation. It provides a GraphQL API for internal dashboards and automation tools, and supports background processing via worker services.
 
@@ -142,3 +115,38 @@ MIT (c) 2025
 
 ## 📄 Additional Documentation
 - [System Design One-Pager](./AI_Ops_Assistant_System_Design.md)
+
+
+---
+
+## 🧪 Testing
+
+_This section outlines upcoming work as part of Phase 2 deployment planning._
+
+To run unit tests:
+
+```bash
+go test ./...
+```
+
+---
+
+## ☁️ Terraform Setup (Placeholder)
+
+_This section outlines upcoming work as part of Phase 2 deployment planning._
+
+1. Navigate to the `terraform/` directory
+2. Run `terraform init`
+3. Create a plan (dry-run): `terraform plan -out=tfplan`
+4. Do not apply until you're ready to provision infrastructure
+
+---
+
+## 🚀 Deployment Instructions (Planned)
+
+_This section outlines upcoming work as part of Phase 2 deployment planning._
+
+- Docker Compose support for local testing
+- Terraform infrastructure (staged)
+- GitHub Actions CI/CD pipeline (planned)
+- AWS deployment configuration (planned)
