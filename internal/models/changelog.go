@@ -1,14 +1,26 @@
 package models
 
 import (
-    "time"
+	"time"
 
-    "github.com/google/uuid"
-    "gorm.io/datatypes"
+	"gorm.io/datatypes"
 )
 
 type Changelog struct {
-    ID          uuid.UUID      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
-    Commits     datatypes.JSON
-    GeneratedAt time.Time
+	BaseModel
+	Commits     datatypes.JSON `gorm:"type:jsonb" json:"commits"` // []GitCommit
+	GeneratedAt time.Time      `json:"generatedAt"`
+}
+
+type ChangelogEntry struct {
+	Scope   string `json:"scope"`
+	Summary string `json:"summary"`
+}
+
+type ChangelogJob struct {
+	BaseModel
+	CommitMessages datatypes.JSON `gorm:"type:jsonb" json:"commitMessages"` // []string
+	Result         datatypes.JSON `gorm:"type:jsonb" json:"result"`         // []ChangelogEntry
+	Processed      bool           `json:"processed"`
+	Error          string         `json:"error"`
 }

@@ -1,47 +1,51 @@
-version: '3.9'
+version: "3.9"
 
 services:
   api:
-    build: .
-    command: ["/bin/api"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-ops-assistant-api
+    command: /bin/api
     ports:
-      - "${PORT}:8080"
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DB_NAME=${DB_NAME}
-      - JWT_SECRET=${JWT_SECRET}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - "8080:8080"
+    env_file: .env
     depends_on:
       - db
 
-  worker:
-    build: .
-    command: ["/bin/worker"]
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DB_NAME=${DB_NAME}
-      - JWT_SECRET=${JWT_SECRET}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+  summarizer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-ops-assistant-summarizer
+    command: /bin/summarizer
+    env_file: .env
+    depends_on:
+      - db
+
+  triage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-ops-assistant-triage
+    command: /bin/triage
+    env_file: .env
     depends_on:
       - db
 
   db:
-    image: postgres:15
+    image: postgres:15-alpine
+    container_name: ai-ops-assistant-db
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./docker/db/init-uuid.sql:/docker-entrypoint-initdb.d/init-uuid.sql
 
 volumes:
   postgres-data:

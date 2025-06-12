@@ -1,0 +1,44 @@
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  ticket(id: ID!): Ticket
+  tickets(status: String): [Ticket]
+  logEntry(id: String!): LogEntry
+  logEntries(limit: Int): [LogEntry]
+  changelog(id: String!): Changelog
+  changelogs(limit: Int): [Changelog]
+}
+
+type Mutation {
+  triageTicket(id: String!, message: String): Ticket
+  summarizeLog(raw: String!): LogEntry
+  generateChangelog(commits: [String!]!): Changelog
+}
+
+type Ticket {
+  id: ID
+  title: String
+  description: String
+  category: String
+  priority: String
+  status: String
+  message: String
+  createdAt: String
+}
+
+type LogEntry {
+  id: String
+  raw: String
+  summary: String
+  createdAt: String
+}
+
+type Changelog {
+  id: String
+  commits: [String!]
+  generatedAt: String
+}

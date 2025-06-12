@@ -5,7 +5,6 @@ import (
     "time"
 
     "ai-ops-assistant/internal/auth"
-    "ai-ops-assistant/internal/db"
     "ai-ops-assistant/internal/models"
     "github.com/google/uuid"
     "github.com/graphql-go/graphql"
@@ -23,7 +22,7 @@ var LoginField = &graphql.Field{
         password := p.Args["password"].(string)
 
         var user models.User
-        if err := db.DB.Where("email = ?", email).First(&user).Error; err != nil {
+        if err := GetDB(p.Context).Where("email = ?", email).First(&user).Error; err != nil {
             return nil, err
         }
 
@@ -51,13 +50,13 @@ var SignupField = &graphql.Field{
         }
 
         user := models.User{
-            ID:        uuid.New(),
             Email:     email,
             Password:  string(hashed),
-            CreatedAt: time.Now(),
-        }
+            }
+user.CreatedAt = time.Now()
+user.ID = uuid.New()
 
-        if err := db.DB.Create(&user).Error; err != nil {
+        if err := GetDB(p.Context).Create(&user).Error; err != nil {
             return nil, err
         }
 
@@ -81,7 +80,7 @@ var MeField = &graphql.Field{
         }
 
         var user models.User
-        if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
+        if err := GetDB(p.Context).First(&user, "id = ?", userID).Error; err != nil {
             return nil, err
         }
 

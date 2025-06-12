@@ -21,16 +21,16 @@ Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket
 
 ## 🔍 Roblox-Relevant Features
 
-- **🧠 Intelligent Automation:** Uses AI (OpenAI) to summarize logs and triage support tickets — simulating internal operational workflows  
-- **🔒 Secure Internal APIs:** JWT authentication and admin-protected routes suitable for HR, Finance, and Engineering dashboards  
-- **🔁 Asynchronous Processing:** Background workers handle summarization and classification tasks to simulate scalable productivity tooling  
+- **🧠 Intelligent Automation:** Uses AI (OpenAI) to summarize logs and triage support tickets — simulating internal operational workflows
+- **🔒 Secure Internal APIs:** JWT authentication and admin-protected routes suitable for HR, Finance, and Engineering dashboards
+- **🔁 Asynchronous Processing:** Background workers handle summarization and classification tasks to simulate scalable productivity tooling
 - **📈 Designed for Scale:** Ready for CI/CD, cloud deployment, and extensibility for observability and metrics — reflecting real platform engineering concerns
 
 ---
 
 ## 🗺️ Architecture Diagram
 
-![AI Ops Assistant Architecture](architecture_diagram.png)
+![AI Ops Assistant Architecture](./docs/architecture_diagram.png)
 
 # AI Ops Assistant
 
@@ -56,18 +56,21 @@ AI Ops Assistant is a backend system designed to simulate intelligent operations
 The MVP includes four core features:
 
 1. **Log Summarization**
+
    - Accept raw log data
    - Generate a summary (mocked NLP)
    - Store and retrieve via GraphQL
    - Async summarizer worker included
 
 2. **Ticket Triage**
+
    - Accept and classify tickets
    - Store in DB
    - Async triage worker included
    - Filter by status
 
 3. **Changelog Generation**
+
    - Accept commit-like entries
    - Generate structured changelogs
    - Store grouped output as JSON
@@ -108,6 +111,7 @@ docker-compose.yml
 ## 🚀 Current Progress
 
 ### ✅ Completed
+
 - Full GraphQL API (modular schema)
 - Log summarization and ticket triage (API + background workers)
 - Changelog generation logic + query support
@@ -115,6 +119,7 @@ docker-compose.yml
 - All MVP features complete
 
 ### 🛠 Planned Next
+
 - CI/CD via GitHub Actions
 - Terraform-based AWS deployment
 - React dashboard
@@ -137,8 +142,8 @@ mutation {
 
 ## 📄 License
 
-MIT (c) 2025
----
+## MIT (c) 2025
 
 ## 📄 Additional Documentation
-- [System Design One-Pager](./AI_Ops_Assistant_System_Design.md)
+
+- [System Design One-Pager](./docs/AI_Ops_Assistant_System_Design.md)

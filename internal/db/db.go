@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"ai-ops-assistant/internal/models"
 
@@ -11,8 +12,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-var DB *gorm.DB
 
 func InitDB() *gorm.DB {
 	_ = godotenv.Load() // Load .env silently
@@ -28,16 +27,24 @@ func InitDB() *gorm.DB {
 		host, user, pass, name, port,
 	)
 
+	var db *gorm.DB
 	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	for attempts := 1; attempts <= 5; attempts++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+		log.Printf("DB not ready, retrying in %d seconds...", attempts*2)
+		time.Sleep(time.Duration(attempts*2) * time.Second)
+	}
 	if err != nil {
 		log.Fatal("❌ Failed to connect to database:", err)
 	}
 
-	if err := DB.AutoMigrate(&models.Ticket{}, &models.LogEntry{}); err != nil {
+	if err := db.AutoMigrate(&models.Ticket{}, &models.LogEntry{}, &models.ChangelogJob{}); err != nil {
 		log.Fatal("❌ Failed to migrate:", err)
 	}
 
 	log.Println("✅ Database initialized and models migrated")
-	return DB
+	return db
 }

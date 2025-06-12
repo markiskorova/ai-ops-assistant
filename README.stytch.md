@@ -1,4 +1,3 @@
-
 # AI Ops Assistant
 
 **AI Ops Assistant** is a backend platform that simulates intelligent internal productivity tools—like those used by Engineering, HR, and Operations teams—to automate workflows and improve operational efficiency. It’s designed as a hands-on demonstration of platform engineering principles: secure APIs, asynchronous processing, developer-focused architecture, and infrastructure automation.
@@ -24,19 +23,24 @@ This project mirrors the type of systems built by internal enablement teams at c
 ## 🚀 Key Features
 
 ### 🧠 Intelligent Automation
+
 Simulates AI-assisted workflows:
+
 - Log summarization
 - Ticket triage
 - Changelog generation  
-Each task is handled by background workers and exposed via GraphQL.
+  Each task is handled by background workers and exposed via GraphQL.
 
 ### 🔒 Secure Internal APIs
+
 JWT-secured API endpoints support multi-role access (admin/user), with bcrypt-hashed passwords and protected routes—similar to how internal dashboards might be built for finance or HR systems.
 
 ### 🧰 Developer-Focused Architecture
+
 Modular, testable Go code with clearly defined separation of concerns (`cmd/api`, `cmd/worker`, `internal/`) and a scalable, extensible GraphQL schema.
 
 ### 🛠 Designed for Scale
+
 - Background job orchestration
 - Docker-based local development
 - Ready for cloud deployment with Terraform and CI/CD integration
@@ -72,7 +76,7 @@ internal/
 
 ## 🗺️ Architecture Overview
 
-![Architecture](architecture_diagram.png)
+![Architecture](./docs/architecture_diagram.png)
 
 - Go-based GraphQL API handles secure CRUD operations
 - Background workers simulate async task processing
@@ -107,6 +111,7 @@ mutation {
 ## 🧩 Relevance
 
 This project is intended to reflect:
+
 - Secure, production-grade backend patterns
 - Internal developer enablement tools
 - Practical Go architecture with extensibility in mind
@@ -122,4 +127,4 @@ MIT © 2025
 
 ## 📚 See Also
 
-- [System Design One-Pager](./AI_Ops_Assistant_System_Design.md)
+- [System Design One-Pager](./docs/AI_Ops_Assistant_System_Design.md)

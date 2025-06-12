@@ -15,3 +15,7 @@ variable "instance_type" {
 variable "key_pair_name" {
   default = "aiops-key"
 }
+
+variable "db_username" {}
+variable "db_password" {}
+

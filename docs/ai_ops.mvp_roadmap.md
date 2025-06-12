@@ -1,3 +1,7 @@
+# 📆 AI Ops Assistant – MVP Roadmap
+
+_Last updated: June 2025_
+
 # AI Ops Assistant – MVP Roadmap & Status (Updated June 2025)
 
 ## 📌 MVP Overview

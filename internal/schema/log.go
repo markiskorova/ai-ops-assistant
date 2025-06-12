@@ -1,97 +1,98 @@
 package schema
 
 import (
-    "ai-ops-assistant/internal/db"
-    "ai-ops-assistant/internal/models"
-    "ai-ops-assistant/internal/summarizer"
-    "errors"
-    "github.com/google/uuid"
-    "github.com/graphql-go/graphql"
+	"ai-ops-assistant/internal/models"
+	"ai-ops-assistant/internal/summarizer"
+	"errors"
+
+	"github.com/google/uuid"
+	"github.com/graphql-go/graphql"
 )
 
 var LogEntryType = graphql.NewObject(graphql.ObjectConfig{
-    Name: "LogEntry",
-    Fields: graphql.Fields{
-        "id":         &graphql.Field{Type: graphql.String},
-        "raw":        &graphql.Field{Type: graphql.String},
-        "summary":    &graphql.Field{Type: graphql.String},
-        "created_at": &graphql.Field{Type: graphql.String},
-    },
+	Name: "LogEntry",
+	Fields: graphql.Fields{
+		"id":        &graphql.Field{Type: graphql.String},
+		"raw":       &graphql.Field{Type: graphql.String},
+		"summary":   &graphql.Field{Type: graphql.String},
+		"createdAt": &graphql.Field{Type: graphql.String},
+	},
 })
 
 var LogEntryQueryFields = graphql.Fields{
-    "logEntry": &graphql.Field{
-        Type: LogEntryType,
-        Args: graphql.FieldConfigArgument{
-            "id": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
-        },
-        Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-            _, ok := p.Context.Value("userID").(string)
-            if !ok {
-                return nil, errors.New("unauthorized")
-            }
+	"logEntry": &graphql.Field{
+		Type: LogEntryType,
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			_, ok := p.Context.Value("userID").(string)
+			if !ok {
+				return nil, errors.New("unauthorized")
+			}
 
-            id := p.Args["id"].(string)
-            var entry models.LogEntry
-            if err := db.DB.First(&entry, "id = ?", id).Error; err != nil {
-                return nil, err
-            }
-            return entry, nil
-        },
-    },
-    "logEntries": &graphql.Field{
-        Type: graphql.NewList(LogEntryType),
-        Args: graphql.FieldConfigArgument{
-            "limit": &graphql.ArgumentConfig{Type: graphql.Int},
-        },
-        Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-            _, ok := p.Context.Value("userID").(string)
-            if !ok {
-                return nil, errors.New("unauthorized")
-            }
+			id := p.Args["id"].(string)
+			var entry models.LogEntry
+			if err := GetDB(p.Context).First(&entry, "id = ?", id).Error; err != nil {
+				return nil, err
+			}
+			return entry, nil
+		},
+	},
+	"logEntries": &graphql.Field{
+		Type: graphql.NewList(LogEntryType),
+		Args: graphql.FieldConfigArgument{
+			"limit": &graphql.ArgumentConfig{Type: graphql.Int},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			_, ok := p.Context.Value("userID").(string)
+			if !ok {
+				return nil, errors.New("unauthorized")
+			}
 
-            limit, ok := p.Args["limit"].(int)
-            if !ok || limit <= 0 {
-                limit = 10
-            }
-            var entries []models.LogEntry
-            if err := db.DB.Order("id DESC").Limit(limit).Find(&entries).Error; err != nil {
-                return nil, err
-            }
-            return entries, nil
-        },
-    },
+			limit, ok := p.Args["limit"].(int)
+			if !ok || limit <= 0 {
+				limit = 10
+			}
+			var entries []models.LogEntry
+			if err := GetDB(p.Context).Order("id DESC").Limit(limit).Find(&entries).Error; err != nil {
+				return nil, err
+			}
+			return entries, nil
+		},
+	},
 }
 
 var LogEntryMutationFields = graphql.Fields{
-    "summarizeLog": &graphql.Field{
-        Type: LogEntryType,
-        Args: graphql.FieldConfigArgument{
-            "raw": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
-        },
-        Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-            _, ok := p.Context.Value("userID").(string)
-            if !ok {
-                return nil, errors.New("unauthorized")
-            }
+	"summarizeLog": &graphql.Field{
+		Type: LogEntryType,
+		Args: graphql.FieldConfigArgument{
+			"raw": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			_, ok := p.Context.Value("userID").(string)
+			if !ok {
+				return nil, errors.New("unauthorized")
+			}
 
-            raw := p.Args["raw"].(string)
-            summary, err := summarizer.Summarize(raw)
-            if err != nil {
-                return nil, err
-            }
+			s := summarizer.NewSummarizerFromEnv()
+			raw := p.Args["raw"].(string)
+			summary, err := s.Summarize(raw)
+			if err != nil {
+				return nil, err
+			}
 
-            entry := models.LogEntry{
-                ID:      uuid.New().String(),
-                Raw:     raw,
-                Summary: summary,
-            }
+			entry := models.LogEntry{
+				ID:      uuid.New().String(),
+				Raw:     raw,
+				Summary: summary,
+			}
 
-            if err := db.DB.Create(&entry).Error; err != nil {
-                return nil, err
-            }
+			if err := GetDB(p.Context).Create(&entry).Error; err != nil {
+				return nil, err
+			}
 
-            return entry, nil
-        },
-    },
+			return entry, nil
+		},
+	},
 }

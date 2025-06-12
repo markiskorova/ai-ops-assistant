@@ -1,144 +1,46 @@
-# AI Ops Assistant
+# 🧠 AI Ops Assistant
 
-AI Ops Assistant is a backend platform inspired by the need for scalable, intelligent internal operations platforms in modern engineering organizations. It simulates the kinds of productivity systems that support cross-functional teams like Engineering, People, and Finance — helping organizations operate at 10x efficiency through automation and AI.
+AI Ops Assistant is a full-stack project simulating a lightweight AI-powered operational triage system. It allows ingestion of raw logs and tickets, summarizes and classifies them, and exposes the results via a GraphQL API.
 
-Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket triage, and changelog generation using a secure API and background workers. It mirrors real-world use cases in platform engineering, developer enablement, and internal tooling — key concerns of internal productivity and enablement teams at scale.
+## 📐 System Design
 
----
+See the [System Design One-Pager](./docs/AI_Ops_Assistant_System_Design.md) for an architecture breakdown.
 
-## 🧰 Tech Stack
+![Architecture Diagram](./docs/architecture_diagram.png)
 
-- **Language:** Go (1.21)
-- **API Layer:** [graphql-go](https://github.com/graphql-go/graphql)
-- **Database:** PostgreSQL (via GORM)
-- **Auth:** JWT (login, signup, me)
-- **Async Processing:** Background worker services (Go)
-- **Containerization:** Docker + Docker Compose
-- **Infrastructure:** Terraform (planned)
-- **Frontend (planned):** React
+## 📆 Project Roadmap
 
----
+See the [MVP Roadmap](./docs/ai_ops.mvp_roadmap.md) for implementation phases and deliverables.
 
-## 🔍 Use Case Highlights
+## 🧪 Local Development
 
-- **🧠 Intelligent Automation:** Uses AI (OpenAI) to summarize logs and triage support tickets — simulating internal operational workflows  
-- **🔒 Secure Internal APIs:** JWT authentication and admin-protected routes suitable for HR, Finance, and Engineering dashboards  
-- **🔁 Asynchronous Processing:** Background workers handle summarization and classification tasks to simulate scalable productivity tooling  
-- **📈 Designed for Scale:** Ready for CI/CD, cloud deployment, and extensibility for observability and metrics — reflecting real platform engineering concerns
-
----
-
-## 🗺️ Architecture Diagram
-
-![AI Ops Assistant Architecture](architecture_diagram.png)
-
-# AI Ops Assistant
-
-AI Ops Assistant is a backend system designed to simulate intelligent operations (ITOps) workflows like log summarization, ticket triage, and changelog generation. It provides a GraphQL API for internal dashboards and automation tools, and supports background processing via worker services.
-
----
-
-## 🧰 Tech Stack
-
-- **Language:** Go (1.21)
-- **API Layer:** [graphql-go](https://github.com/graphql-go/graphql)
-- **Database:** PostgreSQL (via GORM)
-- **Auth:** JWT (login, signup, me)
-- **Async Processing:** Background worker services (Go)
-- **Containerization:** Docker + Docker Compose
-- **Infrastructure:** Terraform (planned)
-- **Frontend (planned):** React
-
----
-
-## ✅ MVP Overview
-
-The MVP includes four core features:
-
-1. **Log Summarization**
-   - Accept raw log data
-   - Generate a summary (mocked NLP)
-   - Store and retrieve via GraphQL
-   - Async summarizer worker included
-
-2. **Ticket Triage**
-   - Accept and classify tickets
-   - Store in DB
-   - Async triage worker included
-   - Filter by status
-
-3. **Changelog Generation**
-   - Accept commit-like entries
-   - Generate structured changelogs
-   - Store grouped output as JSON
-   - Query by ID or list
-
-4. **Secure Admin API**
-   - JWT login and signup
-   - Passwords hashed with bcrypt
-   - Protected queries and mutations
-   - `me` query returns user info
-
----
-
-## 📦 Project Structure
-
-```
-cmd/
-  api/         # GraphQL server
-  worker/
-    summarizer/
-    triage/
-
-internal/
-  auth/        # JWT helpers
-  db/          # DB connection + init
-  models/      # GORM models
-  schema/      # GraphQL types & resolvers
-  summarizer/  # Summarization logic
-  triage/      # Ticket classification logic
-
-.env
-Dockerfile
-docker-compose.yml
+```bash
+docker-compose up --build
 ```
 
----
-
-## 🚀 Current Progress
-
-### ✅ Completed
-- Full GraphQL API (modular schema)
-- Log summarization and ticket triage (API + background workers)
-- Changelog generation logic + query support
-- JWT login/signup + bcrypt + `me` query
-- All MVP features complete
-
-### 🛠 Planned Next
-- CI/CD via GitHub Actions
-- Terraform-based AWS deployment
-- React dashboard
-- Metrics/observability layer
-
----
-
-## 🧪 Example Query
-
-```graphql
-mutation {
-  summarizeLog(raw: "Server crashed at 2am with out-of-memory error.") {
-    id
-    summary
-  }
-}
+Test the GraphQL API at:
+```
+http://localhost:8080/graphql
 ```
 
+## 🔧 Tech Stack
+
+- Go 1.23
+- GORM (Postgres)
+- GraphQL (graphql-go)
+- OpenAI API (for summarization)
+- JWT authentication
+- Docker + Docker Compose
+- Terraform (for AWS RDS provisioning)
+
+## ✅ Features
+
+- Summarize logs using OpenAI
+- Classify tickets with pluggable logic
+- View logs, tickets, and changelogs via GraphQL
+- Cleanly separated API and worker services
+- Structured project layout for production readiness
+
 ---
 
-## 📄 License
-
-MIT (c) 2025
----
-
-## 📄 Additional Documentation
-- [System Design One-Pager](./AI_Ops_Assistant_System_Design.md)
+MIT License.
