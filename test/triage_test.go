@@ -1,23 +1,26 @@
 package test
 
 import (
-	"testing"
-
 	"ai-ops-assistant/internal/triage"
+	"testing"
 )
 
 func TestClassifyTicket(t *testing.T) {
-	input := triage.Ticket{
-		ID:   "123",
-		Text: "User reports a crash when opening the dashboard.",
+	tests := []struct {
+		text     string
+		expected string
+	}{
+		{"System error occurred during login", "Bug"},
+		{"Add support for export feature", "Feature"},
+		{"Infrastructure update with Terraform", "Infra"},
+		{"Some random feedback", "General"},
 	}
 
-	result, err := triage.ClassifyTicket(input)
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-
-	if result.Type == "" || result.Owner == "" || result.Severity == "" {
-		t.Fatal("Classification result is incomplete")
+	for _, tt := range tests {
+		tc := triage.Ticket{ID: "test-123", Text: tt.text}
+		result, _ := triage.ClassifyTicket(tc)
+		if result.Type != tt.expected {
+			t.Errorf("Expected type %s, got %s", tt.expected, result.Type)
+		}
 	}
 }
