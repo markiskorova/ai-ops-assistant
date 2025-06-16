@@ -30,7 +30,7 @@ Built with Go, GraphQL, and OpenAI, the system handles log summarization, ticket
 
 ## 🗺️ Architecture Diagram
 
-![AI Ops Assistant Architecture](./docs/architecture_diagram.png)
+![AI Ops Assistant Architecture](.//docs/architecture_diagram.png)
 
 # AI Ops Assistant
 
