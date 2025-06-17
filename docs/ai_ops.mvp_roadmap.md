@@ -60,6 +60,19 @@ The MVP focuses on 4 core functionalities:
 
 ---
 
+
+---
+
+## ✅ Phase 3 – Infrastructure & Deployment
+
+- [x] Refactored Terraform folder with ECS, VPC, and Secrets Manager scaffolding
+- [x] Validated infrastructure with `terraform init` and `terraform plan`
+- [ ] Configure AWS credentials locally using `aws configure` or env vars
+- [ ] Apply Terraform to provision ECS, RDS, and Secrets
+- [ ] Re-enable GitHub Actions workflows for CI/CD
+- [ ] Add Terraform plan badge and workflow doc to README
+
+
 ## 📦 Planned for Future
 - CI/CD pipeline via GitHub Actions
 - Real log/ticket ingestion (S3, webhook, SNS)

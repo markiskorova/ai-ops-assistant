@@ -3,7 +3,6 @@ resource "aws_db_instance" "aiops_db" {
   engine               = "postgres"
   engine_version       = "13.4"
   instance_class       = "db.t3.micro"
-  name                 = "aiops_db"
   username             = var.db_username
   password             = var.db_password
   skip_final_snapshot  = true

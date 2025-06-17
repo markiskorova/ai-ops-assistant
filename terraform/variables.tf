@@ -19,3 +19,13 @@ variable "key_pair_name" {
 variable "db_username" {}
 variable "db_password" {}
 
+
+variable "api_image" {
+  description = "Docker image URI for the AI Ops API container"
+  type        = string
+}
+
+variable "execution_role_arn" {
+  description = "IAM role ARN for ECS task execution"
+  type        = string
+}
