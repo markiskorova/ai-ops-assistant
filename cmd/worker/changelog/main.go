@@ -3,28 +3,48 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"ai-ops-assistant/internal/changelog"
 	"ai-ops-assistant/internal/db"
 	"ai-ops-assistant/internal/models"
+	"ai-ops-assistant/internal/observability/workermetrics"
 
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 func main() {
-	log.Println("📜 Starting changelog generation worker...")
+	log.Println("🧠 Starting changelog worker...")
 	dbConn := db.InitDB()
 
-	runChangelogLoop(dbConn)
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	// Metrics server for changelog worker
+	go workermetrics.StartServer(":9103")
+
+	go runChangelogLoop(dbConn)
+
+	<-stop
+	log.Println("🛑 Changelog worker stopped.")
 }
 
 func runChangelogLoop(db *gorm.DB) {
 	for {
+		// Optional: expose queue depth (unprocessed jobs)
+		var pending int64
+		if err := db.Model(&models.ChangelogJob{}).
+			Where("processed = ?", false).
+			Count(&pending).Error; err == nil {
+			workermetrics.SetQueueDepth(int(pending))
+		}
+
 		var job models.ChangelogJob
 		err := db.
-			Where("processed = false").
+			Where("processed = ?", false).
 			Order("created_at ASC").
 			First(&job).Error
 
@@ -34,42 +54,58 @@ func runChangelogLoop(db *gorm.DB) {
 			continue
 		}
 
-		log.Printf("🧩 Generating changelog for job ID %s", job.ID)
+		log.Printf("📖 Processing changelog job: %s", job.ID)
 
-		var messages []string
-		if err := json.Unmarshal(job.CommitMessages, &messages); err != nil {
-			log.Printf("❌ Failed to unmarshal: %v", err)
+		// Metrics: one unit of work
+		workermetrics.IncStarted()
+		timer := workermetrics.NewTimer()
+
+		// Step 1: decode commit messages (stored as JSON []string)
+		var commitMsgs []string
+		if err := json.Unmarshal(job.CommitMessages, &commitMsgs); err != nil {
+			log.Printf("❌ Failed to parse commit messages: %v", err)
 			job.Error = err.Error()
-			db.Save(&job)
+			_ = db.Save(&job).Error
+			timer.ObserveDuration()
+			workermetrics.IncFailed()
 			continue
 		}
 
+		// Step 2: map to []GitCommit
 		var commits []changelog.GitCommit
-		for _, msg := range messages {
-			commits = append(commits, changelog.GitCommit{Message: msg})
+		for _, msg := range commitMsgs {
+			commits = append(commits, changelog.GitCommit{
+				Message: msg,
+				Author:  "unknown", // extend schema later if needed
+				Date:    time.Now().Format(time.RFC3339),
+			})
 		}
 
+		// Step 3: parse changelog entries
 		entries, err := changelog.ParseChangelog(commits)
 		if err != nil {
-			log.Printf("❌ Parse error: %v", err)
+			log.Printf("❌ ParseChangelog error: %v", err)
 			job.Error = err.Error()
-			db.Save(&job)
+			_ = db.Save(&job).Error
+			timer.ObserveDuration()
+			workermetrics.IncFailed()
 			continue
 		}
 
-		data, err := json.Marshal(entries)
-		if err != nil {
-			log.Printf("❌ Failed to marshal result: %v", err)
-			continue
-		}
-
+		// Step 4: save result into job.Result (JSON) and mark processed
+		resultJSON, _ := json.Marshal(entries)
+		job.Result = resultJSON
 		job.Processed = true
-		job.Result = datatypes.JSON(data)
+		job.Error = ""
 
 		if err := db.Save(&job).Error; err != nil {
-			log.Printf("❌ Failed to save result: %v", err)
+			log.Printf("❌ Failed to save job result: %v", err)
+			timer.ObserveDuration()
+			workermetrics.IncFailed()
 		} else {
-			log.Printf("✅ Changelog job %s completed", job.ID)
+			log.Printf("✅ Changelog job processed: %s", job.ID)
+			timer.ObserveDuration()
+			workermetrics.IncSucceeded()
 		}
 	}
 }

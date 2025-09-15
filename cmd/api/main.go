@@ -1,44 +1,37 @@
 package main
 
 import (
-	"ai-ops-assistant/internal/auth"
-	"ai-ops-assistant/internal/db"
-	"ai-ops-assistant/internal/schema"
-	"context"
 	"log"
 	"net/http"
-	"strings"
+
+	"ai-ops-assistant/internal/db"
+	"ai-ops-assistant/internal/observability/httpmetrics"
+	"ai-ops-assistant/internal/schema"
 
 	"github.com/graphql-go/handler"
 )
 
 func main() {
 	database := db.InitDB()
-
-	err := schema.Init(database)
-	if err != nil {
+	if err := schema.Init(database); err != nil {
 		log.Fatalf("❌ Failed to initialize GraphQL schema: %v", err)
 	}
 
 	h := handler.New(&handler.Config{
 		Schema:   &schema.Schema,
 		Pretty:   true,
-		GraphiQL: true, // Enables browser UI at /query
+		GraphiQL: true, // Enables browser UI at /graphql
 	})
 
-	http.HandleFunc("/graphql", func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("Authorization")
-		if token != "" {
-			token = strings.TrimPrefix(token, "Bearer ")
-			userID, err := auth.ValidateJWT(token)
-			if err == nil {
-				ctx := context.WithValue(r.Context(), "userID", userID)
-				r = r.WithContext(ctx)
-			}
-		}
-		h.ServeHTTP(w, r)
-	})
+	mux := http.NewServeMux()
+
+	// Expose metrics
+	mux.Handle("/metrics", httpmetrics.Handler())
+
+	// GraphQL with auth + metrics
+	graphql := httpmetrics.AuthMiddleware(h)
+	mux.Handle("/graphql", httpmetrics.Instrument("/graphql", graphql))
 
 	log.Println("🚀 GraphQL server running at http://localhost:8080/graphql")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }

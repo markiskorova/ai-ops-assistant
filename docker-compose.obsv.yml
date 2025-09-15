@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: aiops-prometheus
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./observability/prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: aiops-alertmanager
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+    volumes:
+      - ./observability/alertmanager:/etc/alertmanager
+    ports:
+      - "9093:9093"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: aiops-grafana
+    restart: unless-stopped
+    environment:
+      # Optional: set admin user/pass via env or use defaults (admin/admin)
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      # Enable anonymous viewer if desired
+      # GF_AUTH_ANONYMOUS_ENABLED: "true"
+      # GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+    volumes:
+      # Mount provisioning directory that includes both datasources and dashboards provider
+      - ./observability/grafana:/etc/grafana/provisioning
+      # Persist Grafana sqlite db and plugins (optional but recommended)
+      - ./observability/grafana/data:/var/lib/grafana
+    ports:
+      - "3000:3000"

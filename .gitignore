@@ -1,37 +1,90 @@
-# Go build artifacts
-/bin/
-/pkg/
-*.exe
-*.test
-*.out
+# -----------------------
+# OS / Editor junk
+# -----------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*.orig
 
-# Editor settings
 .vscode/
 .idea/
+*.code-workspace
 
+# -----------------------
 # Environment variables
+# -----------------------
 .env
 .env.*
 !.env.example
 
-# Logs
-*.log
+# -----------------------
+# Go build / test artifacts
+# -----------------------
+/bin/
+/pkg/
+/build/
+/dist/
+/out/
+*.exe
+*.test
+*.out
 
+# Coverage / test reports
+coverage/
+*.coverage
+junit*.xml
+test-results/
+
+# -----------------------
+# Logs
+# -----------------------
+*.log
+logs/
+
+# -----------------------
 # Docker
+# -----------------------
 *.local
 docker-compose.override.yml
+docker/**/data/
+**/tmp/
+**/.cache/
 
+# -----------------------
+# Observability: Grafana / Prometheus
+# (keep provisioning configs, ignore runtime data)
+# -----------------------
+observability/grafana/data/**
+!observability/grafana/provisioning/**
+
+observability/prometheus/data/**
+observability/alertmanager/data/**
+
+# -----------------------
 # Terraform
+# -----------------------
+.terraform/
+terraform/.terraform/**
 *.tfstate
 *.tfstate.*
-.terraform/
-.terraform.lock.hcl
+*.tfplan
+*.auto.tfvars
+*.backup
 crash.log
+crash.*.log
 
+# Keep the lockfile committed
+!terraform/.terraform.lock.hcl
+
+# -----------------------
 # Node (if frontend is added later)
+# -----------------------
 node_modules/
 dist/
 
-# OS files
-.DS_Store
-Thumbs.db
+# -----------------------
+# Other build outputs
+# -----------------------
+/out/

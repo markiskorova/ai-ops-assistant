@@ -1,0 +1,16 @@
+groups:
+- name: core
+  rules:
+  - alert: TargetDown
+    expr: up == 0
+    for: 2m
+    labels: {severity: critical}
+    annotations:
+      summary: "Target {{ $labels.job }} is down"
+
+  - alert: ApiHighErrorRate
+    expr: rate(aiops_api_requests_total{code=~"5.."}[5m]) / rate(aiops_api_requests_total[5m]) > 0.05
+    for: 10m
+    labels: {severity: warning}
+    annotations:
+      summary: "API 5xx > 5% (10m)"
