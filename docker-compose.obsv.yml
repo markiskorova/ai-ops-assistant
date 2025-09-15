@@ -30,13 +30,13 @@ services:
     environment:
       # Optional: set admin user/pass via env or use defaults (admin/admin)
       GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin1
       # Enable anonymous viewer if desired
       # GF_AUTH_ANONYMOUS_ENABLED: "true"
       # GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
     volumes:
       # Mount provisioning directory that includes both datasources and dashboards provider
-      - ./observability/grafana:/etc/grafana/provisioning
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning
       # Persist Grafana sqlite db and plugins (optional but recommended)
       - ./observability/grafana/data:/var/lib/grafana
     ports:

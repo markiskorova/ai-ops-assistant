@@ -1,280 +1,265 @@
 {
-  "dashboard": {
-    "annotations": {
-      "list": [
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "API Throughput (req/s)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
         {
-          "builtIn": 1,
-          "datasource": {
-            "type": "grafana",
-            "uid": "-- Grafana --"
-          },
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
+          "refId": "A",
+          "expr": "rate(aiops_api_requests_total[1m])",
+          "legendFormat": "requests/s"
         }
-      ]
-    },
-    "editable": true,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "links": [],
-    "panels": [
-      {
-        "type": "timeseries",
-        "title": "API Throughput (req/s)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 0
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "rate(aiops_api_requests_total[1m])",
-            "legendFormat": "requests/s"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "req/s"
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "list",
-            "placement": "bottom"
-          }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "req/s"
         }
       },
-      {
-        "type": "timeseries",
-        "title": "API Error Rate (%)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 0
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "100 * sum(rate(aiops_api_request_errors_total[5m])) / sum(rate(aiops_api_requests_total[5m]))",
-            "legendFormat": "error %"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "percent"
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "list",
-            "placement": "bottom"
-          }
-        }
-      },
-      {
-        "type": "timeseries",
-        "title": "API Latency P95 (s)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 8
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "histogram_quantile(0.95, sum by (le) (rate(aiops_api_request_duration_seconds_bucket[5m])))",
-            "legendFormat": "p95"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "s"
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "list",
-            "placement": "bottom"
-          }
-        }
-      },
-      {
-        "type": "timeseries",
-        "title": "API Latency P99 (s)",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 8
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "histogram_quantile(0.99, sum by (le) (rate(aiops_api_request_duration_seconds_bucket[5m])))",
-            "legendFormat": "p99"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "s"
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "list",
-            "placement": "bottom"
-          }
-        }
-      },
-      {
-        "type": "timeseries",
-        "title": "Worker Throughput (jobs/s) by worker",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 16
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "sum(rate(aiops_worker_jobs_succeeded_total[1m])) by (worker)",
-            "legendFormat": "{{worker}}"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "ops"
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "table",
-            "placement": "right"
-          }
-        }
-      },
-      {
-        "type": "timeseries",
-        "title": "Worker Failures (jobs/s) by worker",
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 16
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "sum(rate(aiops_worker_jobs_failed_total[5m])) by (worker)",
-            "legendFormat": "{{worker}}"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "ops"
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "table",
-            "placement": "right"
-          }
-        }
-      },
-      {
-        "type": "stat",
-        "title": "Queue Depth",
-        "gridPos": {
-          "h": 6,
-          "w": 24,
-          "x": 0,
-          "y": 24
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PROM_DS"
-        },
-        "targets": [
-          {
-            "refId": "A",
-            "expr": "aiops_worker_queue_depth"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none"
-          },
-          "overrides": []
-        },
-        "options": {
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "orientation": "horizontal",
-          "textMode": "auto"
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
         }
       }
-    ],
-    "refresh": "10s",
-    "schemaVersion": 39,
-    "style": "dark",
-    "tags": [
-      "ai-ops",
-      "observability"
-    ],
-    "templating": {
-      "list": []
     },
-    "time": {
-      "from": "now-1h",
-      "to": "now"
+    {
+      "type": "timeseries",
+      "title": "API Error Rate (%)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * sum(rate(aiops_api_request_errors_total[5m])) / sum(rate(aiops_api_requests_total[5m]))",
+          "legendFormat": "error %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
     },
-    "timezone": "browser",
-    "title": "AI Ops \u2014 API & Workers",
-    "version": 1
+    {
+      "type": "timeseries",
+      "title": "API Latency P95 (s)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(aiops_api_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "API Latency P99 (s)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(aiops_api_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "p99"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Worker Throughput (jobs/s) by worker",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(aiops_worker_jobs_succeeded_total[1m])) by (worker)",
+          "legendFormat": "{{worker}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Worker Failures (jobs/s) by worker",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(aiops_worker_jobs_failed_total[5m])) by (worker)",
+          "legendFormat": "{{worker}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Queue Depth",
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PROM_DS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "aiops_worker_queue_depth"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "horizontal",
+        "textMode": "auto"
+      }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": [
+    "ai-ops",
+    "observability"
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
   },
-  "overwrite": true,
-  "folderId": 0
+  "timezone": "browser",
+  "title": "AI Ops \u2014 API & Workers",
+  "version": 1
 }
